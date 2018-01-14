@@ -8,8 +8,8 @@ const Focus = ({ onChange, ...props }) => (
       isFocus: state.focused,
       focused: state.focused,
       bindFocus: {
-        onFocusIn: () => setState({ focused: true }),
-        onFocusOut: () => setState({ focused: false }),
+        onFocus: () => setState({ focused: true }),
+        onBlur: () => setState({ focused: false }),
       },
     })}
   </State>
