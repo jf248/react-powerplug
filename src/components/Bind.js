@@ -2,8 +2,8 @@ import React from 'react'
 import State from './State'
 import renderProps from '../utils/renderProps'
 
-const Bind = ({ initial = '', onChange, ...props }) => (
-  <State initial={{ value: initial }} onChange={ onChange }>
+const Bind = ({ initial = '', onChange, value, ...props }) => (
+  <State initial={{ value: initial }} onChange={ onChange } value={value}>
     {({ state, setState }) => renderProps(props, {
       bind: {
         onChange: event => setState({ value: event.target.value }),

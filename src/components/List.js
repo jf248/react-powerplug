@@ -5,8 +5,8 @@ import renderProps from '../utils/renderProps'
 const complement = fn =>
   (...args) => !fn(...args)
 
-const List = ({ initial = [], onChange, ...props }) => (
-  <State initial={{ list: initial }} onChange={ onChange }>
+const List = ({ initial = [], list, onChange, ...props }) => (
+  <State initial={{ list: initial }} list={list} onChange={ onChange }>
     {({ state, setState }) => renderProps(props, {
       list: state.list,
       setList: (list) =>

@@ -19,9 +19,22 @@ class State extends Component {
     })
   }
 
+  isControlledProp = (key) => {
+    return this.props[key] !== undefined
+  }
+
+  getState = () => {
+    return Object.keys(this.state).reduce((state, key) => {
+      state[key] = this.isControlledProp(key)
+        ? this.props[key]
+        : this.state[key]
+      return state
+    }, {})
+  }
+
   render() {
     return renderProps(this.props, {
-      state: this.state,
+      state: this.getState(),
       setState: this._setState,
     })
   }
