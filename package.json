@@ -1,8 +1,8 @@
 {
-  "name": "react-powerplug",
-  "version": "0.1.3",
+  "name": "@jf248/react-powerplug",
+  "version": "0.0.1",
   "description": "Give life to your dumb components",
-  "author": "Renato Ribeiro (http://github.com/renatorib)",
+  "author": "Joshua Freedman (http://github.com/jf248)",
   "license": "MIT",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -39,9 +39,9 @@
     "state"
   ],
   "bugs": {
-    "url": "https://github.com/renatorib/react-powerplug/issues"
+    "url": "https://github.com/jf248/react-powerplug/issues"
   },
-  "homepage": "https://github.com/renatorib/react-powerplug",
+  "homepage": "https://github.com/jf248/react-powerplug",
   "dependencies": {},
   "devDependencies": {
     "babel-cli": "^6.26.0",
