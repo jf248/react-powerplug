@@ -19,7 +19,8 @@
     "typecheck:flow": "flow check && [[ $(flow check) == 'Found 0 errors' ]]",
     "lint": "eslint src",
     "test": "jest",
-    "prepublishOnly": "npm run lint && npm run clean && npm run build"
+    "prepublishOnly": "npm run lint && npm run clean && npm run build",
+    "storybook": "start-storybook -p 6006 -c .storybook"
   },
   "repository": {
     "type": "git",
@@ -44,6 +45,8 @@
   "homepage": "https://github.com/jf248/react-powerplug",
   "dependencies": {},
   "devDependencies": {
+    "@storybook/addon-actions": "^3.3.9",
+    "@storybook/react": "^3.3.9",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^7.2.3",
