@@ -1,389 +1,155 @@
-![react-powerplug](./logo.png)
+# @jf248/react-powerplug
+A modified version of [react-powerplug][react-powerplug], a set of 'pluggable' renderless components that provide logic for your 'dumb' components.
 
-[![npm](https://img.shields.io/npm/v/react-powerplug.svg?style=flat-square)](https://www.npmjs.com/package/react-powerplug)
-[![npm](https://img.shields.io/npm/dt/react-powerplug.svg?style=flat-square)](https://www.npmjs.com/package/react-powerplug)
-[![GitHub issues](https://img.shields.io/github/issues/renatorib/react-powerplug.svg?style=flat-square)](https://github.com/renatorib/react-powerplug/issues)
-[![GitHub stars](https://img.shields.io/github/stars/renatorib/react-powerplug.svg?style=flat-square)](https://github.com/renatorib/react-powerplug/stargazers)
-[![Twitter](https://img.shields.io/twitter/url/https/github.com/renatorib/react-powerplug.svg?style=social&style=flat-square)](https://twitter.com/intent/tweet?url=https://github.com/renatorib/react-powerplug)
+Unlike [react-powerplug][react-powerplug] the state of these renderless components can also be optionally controlled.
 
-:electric_plug: Renderless Pluggable State Containers
+**Also:**
+* A [Filter](#filter) component.
+* The [Focus](#focus) component provides a `focus` function to focus on the target (using refs).
 
----
-
-> I'm working on version 1.0. [Follow me on twitter](http://twitter.com/renatorib_) to know when news will come up.
-
-**React PowerPlug is a set of pluggable renderless components** that provides different types of state and logics so you can use with your dumb components. It creates a state and pass down the logic to the children, so you can handle your data/callbacks.
-
-It's has been created to (but not limited to) use with **storybook, react styleguidist, documentations, prototypes**. You can also use to create a bunch of uncontrolled components where the outside app don't care about your state, for example a menu dropdown.
-
-### Quick examples:
-
+## Quick example
 ```jsx
-import { State, Index, Toggle } from 'react-powerplug'
-import { Pagination, Tabs, Checkbox } from './MyDumbComponents'
+import { State } from '@jf248/react-powerplug';
+import { Pagination } from './components';
 
-<State initial={{ offset: 0, limit: 10, totalCount: 200 }}>
-  {({ state, setState }) => (
-    <Pagination {...state} onChange={(offset) => setState({ offset })} />
-  )}
-</State>
+// State works exactly like react-powerplug
+const StateExample = props =>
+  <State
+    { ...props }
+    initial={{ offset: 0, limit: 10, totalCount: 200 }}
+    render={ ({state, setState}) =>
+      <Pagination {...state} onChange={offset => setState({ offset })} />
+    }
+  />
 
-<Index initial={0}>
-  {({ index, setIndex }) => (
-    <Tabs selected={index} onChange={setIndex}>
-      <Tab title="First tab">Content from the first tab</Tab>
-      <Tab title="Second tab">Content from the second tab</Tab>
-    </Tabs>
-  )}
-</Index>
-
-<Toggle initial={true}>
-  {({ on, toggle }) => (
-    <Checkbox checked={on} onChange={toggle} />
-  )}
-</Toggle>
-
-// You can also use a `render` prop instead
-
-<Toggle
-  initial={false}
-  render={({ on, toggle }) => (
-    <Checkbox checked={on} onChange={toggle}>
-  )}
-/>
+// But we can also control parts of its state, e.g. limit, by adding props
+const ControlledExample = props =>
+  <StateExample
+    limit={props.limit}
+    onStateChange={props.onStateChange}
+  />
 ```
 
-# Renderless Components
+## Renderless components
+See [react-powerplug][react-powerplug] for an introduction to using renderless components.
+> **Note:** You must use a `render` prop not the `children` prop.
 
-Note: Also known as `render props` or `children as function`.  
-For most people, this may look pretty weird. **But it's extremely powerful**. Usually you render some element whitin your component, but if you are creating an 'agnostic' component or a kind of abstraction component you can not simply render elements, you don't know what the user wants to render. So you render values, actions, states, data... props. You pick these props passing a function to children (or render prop) and now with this data you have total control of what you want to do. Now render what you want to render and do what you want to do. **Renderless components are about abstracting some logic without any UI.**
+## Install
+```
+yarn add @jf248/react-powerplug
+```
+```
+npm i @jf248/react-powerplug
+```
 
-React PowerPlug brings to you a bunch of components that act as state and logic containers, so you can get this powerful abstraction and use it any way you want.
+## Examples
+See the [storybook][storybook].
 
-**Note:** with PowerPlug you can use `children` or `render` prop.  
-You decide which one is best for you.
-
-# Components
-
-***Note:*** *This is a kind of a cheat sheet for fast search.*  
-*If you want a more detailed **API Reference** and examples for each component see the [Docs](/docs)*
-
-## State Containers
+## Components
+* [State](#state)
+* [Toogle](#toggle)
+* [Focus](#focus)
+* [Filter](#filter)
 
 ### State
-**Component Props:** `{ initial }`  
-**Render Props:** `{ state, setState }`  
-[see docs](docs/components/State.md)
+#### Props
+prop | type | default | description
+--- | --- | --- | ---
+`initial` | `object` | `undefined` | The initial state.
+`onChange` | `function(state: object)` | `noop` | This function is called any time the state is changed.
 
-```jsx
-<State initial={{ isLoading: false, data: null }}>
-  {({ state, setState }) => (
-    <DataReceiver
-      data={state.data}
-      onStart={() => setState({ isLoading: true })}
-      onFinish={data => setState({ data, isLoading: false })}
-    />
-  )}
-</State>
-```
+> In addition any part of the state can be controlled by passing a prop with the same name. E.g. to control `state.age`, pass in an `age` prop, `<State age={} ... />`, and use `onChange` to detect if the controlled component is trying to change state.
+
+#### Render props
+prop | type | description
+--- | --- | ---
+`state` | `object` | The current state.
+`setState` | `function` | State setter, same as `setState` from `React.Component`.
 
 ### Toggle
-**Component Props:** `{ initial }`  
-**Render Props:** `{ on, off, toggle, setOn }`  
-[see docs](docs/components/Toggle.md)
+#### Props
+prop | type | default | description
+--- | --- | --- | ---
+`initial` | `boolean` | `false` | The initial/default state of the toggle.
+`on` | `bool` | `undefined` | **optional control prop**
+`onChange` | `function(state: object)` | `noop` | This function is called any time the state is changed.
 
-```jsx
-<Toggle initial={true}>
-  {({ on, toggle }) => (
-    <Checkbox checked={on} onChange={toggle} />
-  )}
-</Toggle>
-```
+#### Render props
+prop | type | description
+--- | --- | ---
+`on` | `bool` | True if current state.on in true.
+`off` | `bool` | True if current state.on is false.
+`toggle` | `function` | Function that toggles the state.
+`setOn` | `function` | Function that sets state to on.
 
-### Loading
-**Component Props:** `{ initial }`  
-**Render Props:** `{ isLoading, toggle, setLoading }`  
-[see docs](docs/components/Loading.md)
+### Filter
+Filters an array of `items` using a `filterFunc` that takes a `query` and `items` as arguments and return the `filteredItems`.
 
-```jsx
-<Loading initial={false}>
-  {({ isLoading, toggleLoading }) => (
-    <Button onClick={toggleLoading}>
-      {isLoading ? 'Loading...' : 'Click me'}
-    </Button>
-  )}
-</Loading>
-```
+The `query` is updated by passing a new query to the `refine` render prop function.
 
-### Value
-**Component Props:** `{ initial }`  
-**Render Props:** `{ value, setValue }`  
-[see docs](docs/components/Value.md)
+In addition, `query` can be controlled by passing a `query` prop and using `onChange` to detect internal changes to the `query`.
 
-```jsx
-<Value initial="React">
-  {({ value, setValue }) => (
-    <Select
-      label="Choose one"
-      options={['React', 'Preact', 'Vue']}
-      value={value}
-      onChange={setValue}
-    />
-  )}
-</Value>
-```
+#### Props
+prop | type | default | description
+--- | --- | --- | ---
+`defaultQuery` | `any` | `''` | The default query.
+`filterFunc` | `function(items: array, query: any)` | **required** | A function to filter the items.
+`items` | `array(any)` | `[]` | The items to filter.
+`query` | `any` | `undefined` | **optional control prop**
+`onChange` | `function(state: object)` | `noop` | This function is called any time the state is changed.
 
-### Index
-**Component Props:** `{ initial }`  
-**Render Props:** `{ index, setIndex }`  
-[see docs](docs/components/Index.md)
-
-```jsx
-<Index initial={0}>
-  {({ index, setIndex }) => (
-    <Tabs selected={index} onChange={setIndex}>
-      <Tab title="First tab">Content from the first tab</Tab>
-      <Tab title="Second tab">Content from the second tab</Tab>
-    </Tabs>
-  )}
-</Index>
-```
-
-### Set
-**Component Props:** `{ initial }`  
-**Render Props:** `{ set, get, values }`  
-[see docs](docs/components/Set.md)
-
-```jsx
-<Set initial={{ sounds: true, graphics: 'medium' }}>
-  {({ set, get }) => (
-    <Settings>
-      <ToggleCheck checked={get('sounds')} onChange={c => set('sounds', c)}>
-        Game Sounds
-      </ToggleCheck>
-      <Select
-        label="Graphics"
-        options={['low', 'medium', 'high']}
-        selected={get('graphics')}
-        onSelect={value => set('graphics', value)}
-      />
-    </Settings>
-  )}
-</Set>
-```
-
-### List
-**Component Props:** `{ initial }`  
-**Render Props:** `{ list, push, pull, sort, setList }`  
-[see docs](docs/components/List.md)
-
-```jsx
-<List initial={['react', 'babel']}>
-  {({ list, pull, push }) => (
-    <div>
-      <FormInput onSubmit={push} />
-      {list.map(tag => (
-        <Tag onRemove={() => pull(value => value === tag)}>
-          {tag}
-        </Tag>
-      )}
-    </div>
-  )}
-</List>
-```
-
-## Feedback Containers
-
-It's like css pseudo-selectors, but in js :)
-
-### Hover
-**Component Props:** `{ }`  
-**Render Props:** `{ isHover, bindHover }`  
-[see docs](docs/components/Hover.md)
-
-```jsx
-<Hover>
-  {({ isHover, bindHover }) => (
-    <div {...bindHover}>
-      You are {isHover ? 'hovering' : 'not hovering'} this div.
-    </div>
-  )}
-</Hover>
-```
-
-### Active
-**Component Props:** `{ }`  
-**Render Props:** `{ isActive, bindActive }`  
-[see docs](docs/components/Active.md)
-
-```jsx
-<Active>
-  {({ isActive, bindActive }) => (
-    <div {...bindActive}>
-      You are {isActive ? 'clicking' : 'not clicking'} this div.
-    </div>
-  )}
-</Active>
-```
+#### Render props
+prop | type | description
+--- | --- | ---
+`filteredItems` | `array(any)` | The filtered items.
+`query` | `any` | `The current query`.
+`refine` | `function(query: any)` | This function takes a new query and updates the `filteredItems`.
 
 ### Focus
-**Component Props:** `{ }`  
-**Render Props:** `{ isFocus, bindFocus }`  
-[see docs](docs/components/Focus.md)
+Same funcitonality as [react-powerplug][react-powerplug]'s `Focus` but also has `focus` and `blur` methods that use `refs` internally to allow a target element's focus to be controlled.
 
-```jsx
-<Focus>
-  {({ isFocus, bindFocus }) => (
-    <div>
-      <input {...bindFocus} placeholder="Focus me" />
-      <div>You are {isFocus ? 'focusing' : 'not focusing'} the input.</div>
-    </div>
-  )}
-</Focus>
-```
+#### Props
+prop | type | default | description
+--- | --- | --- | ---
+`focusProps` | `object` | `{ref: noop, onFocus: noop, onBlur: noop}` | An optional property used to chain `Focus` components. See below.
 
-## Form Containers
+#### Render props
+prop | type | description
+--- | --- | ---
+`blur` | `function` | Calling this function blurs the target.
+`focus` | `function` | Calling this function focuses the target.
+`focused` | `boolean` | The current focus state of the target.
+`getFocusProps` | `function(propToMerge={})` | A function that returns the props for the target (the element we wish to focus)<br/><br/>*Example:*<br/>`<input { ...getFocusProps({onFocus: <handleFocus>}) } />`<br/><br/>See [this blog post][prop getters] on 'prop getters'.
 
-**Note:** *v1.0 will have more powerful form-related components, stay tuned!*
+>**Here's how to chain `Focus` elements:**
+>```jsx
+><Focus>
+>  {({getTargetProps}) =>
+>    <Focus
+>      focusProps={getFocusProps()}
+     >
+>      {({getFocusProps}) =>
+>        <input { ...getFocusProps() } />
+>      }
+>    </Focus>
+>  }
+></Focus>
+>```
 
-### Bind
-**Component Props:** `{ initial }`  
-**Render Props:** `{ value, setValue, bind }`   
-[see docs](docs/components/Bind.md)
+## Credits
+I initially learnt about the power of renderless components and the 'render prop' pattern from [downshift](downshift) as well as the 'prop getter' pattern used in `getTargetProps` prop of the `Focus` component.
 
-```jsx
-<Bind initial="hello world">
-  {({ bind, value }) => (
-    <div>
-      <ControlledInput {...bind} />
-      <div>You typed {value}</div>
-    </div>
-  )}
-</Bind>
-```
+I also learnt more about these patterns from [articles][use a render prop article] and [courses][reacttraining] by [Michael Jackson][michael jackson] and [Ryan Florence][ryan florence].
 
-### Form
-**Component Props:** `{ initial }`  
-**Render Props:** `{ input }`   
-[see docs](docs/components/Form.md)
+And, of course, [react-powerplug][react-powerplug].
 
-```jsx
-<Form initial={{ subject: '', message: '' }}>
-  {({ input }) => {
-    const subject = input('subject')
-    const message = input('message')
+Thank you.
 
-    return (
-      <div>
-        <ControlledInput
-          placeholder="Subject"
-          {...subject.bind}
-        />
-        <ControlledTextArea
-          placeholder="Message"
-          {...message.bind}
-        />
-        <Submit>Send</Submit>
-
-        {/*
-          input(id) => { bind, setValue, value }
-        */}
-      </div>
-    )
-  }
-</Form>
-```
-
-# Composing Components
-
-If you want to merge two of more components functionalities, you can compose they in a single one.  
-For complete guide [see Compose docs](docs/components/Compose.md)
-
-```jsx
-import { compose } from 'react-powerplug'
-
-const ToggleCounter = compose(Toggle, Counter)
-
-<ToggleCounter>
-  {({ count, inc, dec, on, toggle }) => (
-    <ProductCard
-      {...productInfo}
-      isFavorited={on}
-      onFavorite={toggle}
-      count={count}
-      onAdd={inc}
-      onRemove={dec}
-    />
-  )}
-</ToggleCounter>
-```
-
-If you need to pass props, especially for `initial`, just pass a created element. Internals this will be cloned.
-
-```jsx
-const ToggleCounter = compose(<Toggle initial={false} />, <Counter initial={2} />)
-
-// or just mix it
-const ToggleCounter = compose(Toggle, <Counter initial={3} />)
-```
-
-Also, you can use a built-in Compose component and pass components on `states` prop
-
-```jsx
-import { Compose } from 'react-powerplug'
-
-<Compose states={[Toggle, Counter]}>
-  {({ on, toggle, count, inc, dec }) => (
-    <ProductCard {...} />
-  )}
-</Compose>
-``` 
-
-Behind the scenes, that's what happens:
-
-```jsx
-<Counter /* passed props */>
-  {({ count, inc, dec }) => (
-    <Toggle /* passed props */>
-      {({ on, toggle }) => (s
-        <ProductCard
-          {...productInfo}
-          isFavorited={on}
-          onFavorite={toggle}
-          count={count}
-          onAdd={inc}
-          onRemove={dec}
-        />
-      )}
-    </Toggle>
-  )}
-</Counter>
-```
-
-Because of that, when you use `toggle` function, only `<Toggle>` will be rerendered, but if you use `inc` or `dec` functions, both `<Counter>` and `<Toggle>` will be rerendered. **Even** using `compose()` utility.
-
-# CodeSandbox examples
-
-[Using Toggle in a Checkbox](https://codesandbox.io/s/jp890p2x7w)  
-[Using State in a Pagination](https://codesandbox.io/s/8x9m4893l2)
-
-# Install
-
-### Node Module
-```
-yarn add react-powerplug
-```
-```
-npm i react-powerplug
-```
-
-### UMD library
-```html
-<script src="https://unpkg.com/react-powerplug/dist/react-powerplug.min.js"></script>
-```
-exposed as `ReactPowerPlug`
-
-# Contribute
-
-You can help improving this project sending PRs and helping with issues.  
-Also you can ping me at [Twitter](http://twitter.com/renatorib_)
+[react-powerplug]: https://github.com/renatorib/react-powerplug
+[downshift]: https://github.com/paypal/downshift
+[storybook]: https://jf248.github.io/react-controllable-renderless
+[reacttraining]: https://courses.reacttraining.com
+[ryan florence]: https://github.com/ryanflorence
+[use a render prop article]: https://cdb.reacttraining.com/use-a-render-prop-50de598f11ce
+[michael jackson]: https://github.com/mjackson
+[prop getters]: https://blog.kentcdodds.com/how-to-give-rendering-control-to-users-with-prop-getters-549eaef76acf
