@@ -1,5 +1,5 @@
 # @jf248/react-powerplug
-A modified version of [react-powerplug][react-powerplug], a set of 'pluggable' renderless components that provide logic for your 'dumb' components.
+A modified version of [react-powerplug][react-powerplug].
 
 Unlike [react-powerplug][react-powerplug] the state of these renderless components can also be optionally controlled.
 
@@ -127,7 +127,7 @@ prop | type | description
 >  {({getTargetProps}) =>
 >    <Focus
 >      focusProps={getFocusProps()}
-     >
+>    >
 >      {({getFocusProps}) =>
 >        <input { ...getFocusProps() } />
 >      }
@@ -147,7 +147,7 @@ Thank you.
 
 [react-powerplug]: https://github.com/renatorib/react-powerplug
 [downshift]: https://github.com/paypal/downshift
-[storybook]: https://jf248.github.io/react-controllable-renderless
+[storybook]: https://jf248.github.io/react-powerplug
 [reacttraining]: https://courses.reacttraining.com
 [ryan florence]: https://github.com/ryanflorence
 [use a render prop article]: https://cdb.reacttraining.com/use-a-render-prop-50de598f11ce
