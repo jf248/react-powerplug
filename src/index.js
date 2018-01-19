@@ -2,6 +2,7 @@ import Active from './components/Active'
 import Bind from './components/Bind'
 import Compose from './components/Compose'
 import Counter from './components/Counter'
+import Filter from './components/Filter'
 import Focus from './components/Focus'
 import Form from './components/Form'
 import Hover from './components/Hover'
@@ -21,6 +22,7 @@ export {
   Bind,
   Compose,
   Counter,
+  Filter,
   Focus,
   Form,
   Hover,
@@ -40,6 +42,7 @@ export default {
   Bind,
   Compose,
   Counter,
+  Filter,
   Focus,
   Form,
   Hover,
