@@ -3,7 +3,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 
-import { Focus, State, Toggle } from  '../src';
+import { Filter, Focus, State, Toggle } from  '../src';
 
 import './index.css';
 
@@ -38,7 +38,6 @@ const StateExample = ({ text, onChange }) =>
         </div>
     }
   />;
-
 
 storiesOf('State', module)
   .add('uncontrolled', () =>
@@ -154,6 +153,56 @@ storiesOf('Focus', module)
               onChange={action('controlled onChange')}
             />
           </div>
+      }
+    />
+  );
+
+const items = ['apple', 'banana', 'orange', 'pear']
+
+const filterFunc = (items, query) => items.filter(
+  item => item.includes(query)
+)
+
+const FilterExample = ({query, onChange}) =>
+  <Filter
+    filterFunc={filterFunc}
+    items={items}
+    query={query}
+    onChange={onChange}
+    render={({filteredItems, refine, query}) =>
+        <div style={styles.uncontrolled}>
+          <input
+            placeholder="Type to filter list..."
+            value={query}
+            onChange={e => refine(e.target.value)}
+          />
+          <ul>
+            {filteredItems.map( item => <li key={item}>{item}</li>)}
+          </ul>
+        </div>
+    }
+  />
+
+storiesOf('Filter', module)
+  .add('uncontrolled', () =>
+    <FilterExample onChange={action('onChange')} />
+  )
+  .add('controlled', () =>
+    <State
+      initial={{query: ''}}
+      onChange={action('controller onChange')}
+      render={({state, setState}) =>
+        <div style={styles.controlled}>
+          <button onClick={() => setState({query: 'pe'})}>
+            Click to change filter to &apos;pe&apos;
+          </button>
+          <FilterExample
+            query={state.query}
+            onChange={nextState =>
+              {setState(nextState); action('controlled onChange')}
+            }
+          />
+        </div>
       }
     />
   );
