@@ -199,7 +199,7 @@ storiesOf('Filter', module)
           <FilterExample
             query={state.query}
             onChange={nextState =>
-              {setState(nextState); action('controlled onChange')}
+              {setState(nextState); action('controlled onChange')(nextState)}
             }
           />
         </div>
