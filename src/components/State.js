@@ -12,11 +12,17 @@ class State extends Component {
     ...this.props.initial
   }
 
-  _setState = (updater, cb = noop) => {
-    this.setState(updater, () => {
-      this.props.onChange(this.state)
-      cb()
+  componentDidUpdate(prevPros, prevState) {
+    const keys = Object.keys(this.state)
+    const changes = {}
+    keys.forEach(key => {
+      if (this.state[key] !== prevState[key]) {
+        changes[key] = this.state[key]
+      }
     })
+    if (changes.length !== 0) {
+      this.props.onChange(changes)
+    }
   }
 
   isControlledProp = (key) => {
@@ -30,6 +36,10 @@ class State extends Component {
         : this.state[key]
       return state
     }, {})
+  }
+
+  _setState = (updater, cb) =>{
+    this.setState(updater, cb)
   }
 
   render() {
